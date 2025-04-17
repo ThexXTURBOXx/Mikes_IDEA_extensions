@@ -69,7 +69,7 @@ class AtomicAsVolatileInspection : UastInspection() {
     }
 
     private val UField.uTypeElement: PsiElement get() =
-        ((this as? UField)?.sourcePsi as? KtProperty)?.typeReference?.typeElement ?: // Kotlin explicit type, or
+        (this.sourcePsi as? KtProperty)?.typeReference?.typeElement ?: // Kotlin explicit type, or
         typeReference?.sourcePsi ?: // Java type, or
         uastInitializer?.sourcePsi ?: // initializer expression (let's think that type is inferred), or
         this // the whole field declaration, if something went wrong
@@ -85,9 +85,9 @@ class AtomicAsVolatileInspection : UastInspection() {
 
         // Kotlin
         PsiTreeUtil.getParentOfType(el, KtDotQualifiedExpression::class.java)
-            ?.takeIf { it.receiverExpression.references.any { it.element == el } }
+            ?.takeIf { it1 -> it1.receiverExpression.references.any { it.element == el } }
             ?.let { (it.selectorExpression as? KtCallExpression)?.calleeExpression?.references }
-            ?.forEach { (it.resolve() as? PsiMethod)?.name?.let { return it } }
+            ?.forEach { it1 -> (it1.resolve() as? PsiMethod)?.name?.let { return it } }
 
         return null
     }

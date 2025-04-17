@@ -24,7 +24,7 @@ import com.intellij.psi.PsiMethodCallExpression
 import com.intellij.psi.PsiPrimitiveType
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiStatement
-import com.intellij.psi.PsiType
+import com.intellij.psi.PsiTypes
 import com.intellij.psi.SmartPointerManager
 import com.intellij.psi.codeStyle.CodeStyleManager
 import com.intellij.psi.codeStyle.JavaCodeStyleManager
@@ -464,8 +464,8 @@ internal val PsiType_INT: PsiPrimitiveType by lazy {
     try {
         // still unavailable in 2022.1.4 (last AS release)
         Class.forName("com.intellij.psi.PsiTypes").getMethod("intType").invoke(null) as PsiPrimitiveType
-    } catch (e: ReflectiveOperationException) {
-        PsiType.INT // deprecated for removal since IU-231.6471.13
+    } catch (_: ReflectiveOperationException) {
+        PsiTypes.intType() // deprecated for removal since IU-231.6471.13
     }
 }
 

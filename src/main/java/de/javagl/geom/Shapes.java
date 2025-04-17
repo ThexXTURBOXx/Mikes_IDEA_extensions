@@ -27,12 +27,10 @@
 package de.javagl.geom;
 
 import java.awt.Shape;
-//import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -57,7 +55,7 @@ public class Shapes
         List<List<Point2D>> regions = new ArrayList<>();
         PathIterator pi = shape.getPathIterator(null, flatness);
         float[] coords = new float[6];
-        List<Point2D> region = Collections.emptyList();
+        List<Point2D> region = new ArrayList<>();
         while (!pi.isDone()) {
             switch (pi.currentSegment(coords)) {
                 case PathIterator.SEG_MOVETO:
@@ -99,10 +97,8 @@ public class Shapes
         double sum1 = 0;
         for (int i=0; i<points.size()-1; i++)
         {
-            int i0 = i;
-            int i1 = i + 1;
-            Point2D p0 = points.get(i0);
-            Point2D p1 = points.get(i1);
+            Point2D p0 = points.get(i);
+            Point2D p1 = points.get(i + 1);
             double x0 = p0.getX();
             double y0 = p0.getY();
             double x1 = p1.getX();
@@ -110,8 +106,8 @@ public class Shapes
             sum0 += x0 * y1;
             sum1 += x1 * y0;
         }
-        Point2D p0 = points.get(0);
-        Point2D pn = points.get(points.size()-1);
+        Point2D p0 = points.getFirst();
+        Point2D pn = points.getLast();
         double x0 = p0.getX();
         double y0 = p0.getY();
         double xn = pn.getX();

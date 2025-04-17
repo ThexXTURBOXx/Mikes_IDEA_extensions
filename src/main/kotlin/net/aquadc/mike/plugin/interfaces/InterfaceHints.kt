@@ -191,7 +191,7 @@ private class InterfaceHintsCollector(
             val argClass = when (argumentType) {
                 UastErrorType, is PsiCapturedWildcardType -> null
                 is PsiClassType -> argumentType
-                is PsiPrimitiveType -> argumentType.getBoxedType(parameterType.manager, allScope(parameterType.getProject()))
+                is PsiPrimitiveType -> argumentType.getBoxedType(parameterType.manager, allScope(parameterType.project))
                 is PsiMethodReferenceType, is PsiLambdaExpressionType, is PsiLambdaParameterType -> null
                 else -> Logger.getInstance(InterfaceHintsCollector::class.java)
                     .error("arg type is ${argumentType::class.java} : $argumentType")
@@ -231,7 +231,7 @@ private class InterfaceHintsCollector(
     // LOL, very simple, ignores how many of them were actually implemented
     private val PsiClass.mainInterfaceByImplCount: PsiClass?
         get() = interfaces // ignore single- or two-method interfaces
-            .maxByIf({ it.methods.count { it.modifierList.hasModifierProperty(PsiModifier.ABSTRACT) } }, { it > 2 })
+            .maxByIf({ it -> it.methods.count { it.modifierList.hasModifierProperty(PsiModifier.ABSTRACT) } }, { it > 2 })
 
     private val PsiClass.typeName: String?
         get() {

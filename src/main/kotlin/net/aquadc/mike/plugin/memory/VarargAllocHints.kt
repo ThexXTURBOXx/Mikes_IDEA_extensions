@@ -130,9 +130,9 @@ private class VarargAllocationHintsCollector(
         val callee = element.calleeExpression?.mainReference?.resolve()?.toUElementOfType<UMethod>() ?: return true
 
         val uastParameters = callee.uastParameters
-        var variadicParamIndex = uastParameters.indexOfFirst {
-            it.isVarArgs || // dafuq? https://twitter.com/miha_x64/status/1796637009336815855
-                it.sourcePsi.let { it is KtParameter && it.isVarArg }
+        var variadicParamIndex = uastParameters.indexOfFirst { it1 ->
+            it1.isVarArgs || // dafuq? https://twitter.com/miha_x64/status/1796637009336815855
+                it1.sourcePsi.let { it is KtParameter && it.isVarArg }
         }
         val variadicParamName = uastParameters.getOrNull(variadicParamIndex)?.name
         if (callee.sourcePsi?.isExtensionDeclaration() == true || // not sure what should I check

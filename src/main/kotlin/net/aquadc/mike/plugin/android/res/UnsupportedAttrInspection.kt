@@ -29,7 +29,7 @@ class UnsupportedAttrInspection : LocalInspectionTool() {
             if (file !is XmlFile) return
             val af = file.androidFacet ?: return
             val minSdk = af.androidMinSdk?.apiLevel ?: return
-            val resType = af.resTypeOf(file)?.takeIf(Crap.resTypes::contains) ?: return
+            val resType = Crap.resTypes?.let { af.resTypeOf(file)?.takeIf(it::contains) } ?: return
             file.accept(object : XmlRecursiveElementVisitor() {
                 override fun visitXmlAttribute(attribute: XmlAttribute) {
                     val parentTag = attribute.parent.parentTag?.name
@@ -88,7 +88,7 @@ private class Crap(
                 message = "<include layout=\"?themeAttribute\"> {1}",
             ),
         )
-        val resTypes = shitBunch.mapTo(EnumSet.noneOf(ResourceFolderType::class.java), Crap::resType)
+        val resTypes: EnumSet<ResourceFolderType?>? = shitBunch.mapTo(EnumSet.noneOf(ResourceFolderType::class.java), Crap::resType)
     }
 
 }

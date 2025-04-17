@@ -22,11 +22,11 @@ private var resolveResolver: (ConfigurationManager, VirtualFile) -> ResourceReso
         man.getConfiguration(vf).resourceResolver.also { _ ->
             resolveResolver = { man, vf -> man.getConfiguration(vf).resourceResolver }
         }
-    } catch (e: LinkageError) {
+    } catch (_: LinkageError) {
         val getConfiguration = ConfigurationManager::class.java.getMethod("getConfiguration", VirtualFile::class.java)
-        val TConfiguration = Class.forName("com.android.tools.configurations.Configuration")
+        val tConfiguration = Class.forName("com.android.tools.configurations.Configuration")
         //                              was com.android.tools.idea.configurations.Configuration
-        val getResourceResolver = TConfiguration.getMethod("getResourceResolver")
+        val getResourceResolver = tConfiguration.getMethod("getResourceResolver")
         (getResourceResolver(getConfiguration(man, vf)) as ResourceResolver).also { _ ->
             resolveResolver = { man, vf -> getResourceResolver(getConfiguration(man, vf)) as ResourceResolver }
         }

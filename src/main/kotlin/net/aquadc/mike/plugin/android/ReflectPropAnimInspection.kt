@@ -97,11 +97,11 @@ class ReflectPropAnimInspection : UastInspection(), CleanupLocalInspectionTool {
                     if (replaceMethodWith == "") {
                         if (lang == Java) PsiReplacementUtil.replaceExpression(
                             call as PsiExpression,
-                            TView + '.' + replacements.single()
+                            TVIEW + '.' + replacements.single()
                         ) else if (lang == Kotlin) CodeStyleManager.getInstance(call.project).reformat(
                             ShortenRefs.process(
                                 (call.parent as? KtDotQualifiedExpression ?: call).replace(
-                                    KtPsiFactory(call.project).createExpression(TView + '.' + replacements.single())
+                                    KtPsiFactory(call.project).createExpression(TVIEW + '.' + replacements.single())
                                 ) as KtElement
                             )
                         )
@@ -110,7 +110,7 @@ class ReflectPropAnimInspection : UastInspection(), CleanupLocalInspectionTool {
                             argIndices.forEachIndexed { i, argIdx ->
                                 (args[argIdx].sourcePsi as? PsiExpression)?.let { srcArg ->
                                     val replacement = replacements[i]
-                                    PsiReplacementUtil.replaceExpressionAndShorten(srcArg, "$TView.$replacement")
+                                    PsiReplacementUtil.replaceExpressionAndShorten(srcArg, "$TVIEW.$replacement")
                                 }
                             }
                         } else if (lang == Kotlin) {
@@ -118,7 +118,7 @@ class ReflectPropAnimInspection : UastInspection(), CleanupLocalInspectionTool {
                             argIndices.forEachIndexed { i, argIdx ->
                                 val replacement = replacements[i]
                                 wrapULiteral(args[argIdx]).sourcePsi?.replace(
-                                    kt.createExpression("$TView.$replacement")
+                                    kt.createExpression("$TVIEW.$replacement")
                                 )
                             }
                             CodeStyleManager.getInstance(call.project).reformat(ShortenRefs.process(call))
@@ -143,56 +143,56 @@ class ReflectPropAnimInspection : UastInspection(), CleanupLocalInspectionTool {
 
     private companion object {
         private const val AA = "android.animation"
-        private const val TObjectAnimator = "$AA.ObjectAnimator"
-        private const val TPropValsHolder = "$AA.PropertyValuesHolder"
-        private const val TPath = "android.graphics.Path"
-        private const val TView = "android.view.View"
+        private const val TOBJECTANIMATOR = "$AA.ObjectAnimator"
+        private const val TPROPVALSHOLDER = "$AA.PropertyValuesHolder"
+        private const val TPATH = "android.graphics.Path"
+        private const val TVIEW = "android.view.View"
         private val dontMindArgs: ArgsPredicate = { true }
-        private val firstArgMustBeView: ArgsPredicate = { (arg,) ->
-            arg.getExpressionType()?.let { arg.getTypeByName(TView)?.isAssignableFrom(it) } == true
+        private val firstArgMustBeView: ArgsPredicate = { (arg) ->
+            arg.getExpressionType()?.let { arg.getTypeByName(TVIEW)?.isAssignableFrom(it) } == true
         }
-        private val firstArgMustBeViewClass: ArgsPredicate = { (arg,) ->
+        private val firstArgMustBeViewClass: ArgsPredicate = { (arg) ->
             ((arg.getExpressionType() as? PsiClassType)?.typeArguments()?.firstOrNull() as? PsiType)
-                ?.let { arg.getTypeByName(TView)?.isAssignableFrom(it) } == true
+                ?.let { arg.getTypeByName(TVIEW)?.isAssignableFrom(it) } == true
         }
         private val MATCHERS_TO_FIXES = arrayOf(
             MatcherToFix(
                 CallMatcher.anyOf(
-                    CallMatcher.exactInstanceCall(TObjectAnimator, "setPropertyName").parameterTypes(TString),
-                    CallMatcher.exactInstanceCall(TPropValsHolder, "setPropertyName").parameterTypes(TString),
+                    CallMatcher.exactInstanceCall(TOBJECTANIMATOR, "setPropertyName").parameterTypes(TString),
+                    CallMatcher.exactInstanceCall(TPROPVALSHOLDER, "setPropertyName").parameterTypes(TString),
                 ), dontMindArgs, intArrayOf(0) /* raw type, nothing to check */, "setProperty"
             ),
             MatcherToFix(
                 CallMatcher.anyOf(
-                    CallMatcher.staticCall(TObjectAnimator, "ofInt").parameterTypes(TObject, TString, "int[]"),
-                    CallMatcher.staticCall(TObjectAnimator, "ofMultiInt").parameterTypes(TObject, TString, null /* int[][] | Path */),
-                    CallMatcher.staticCall(TObjectAnimator, "ofMultiInt").parameterTypes(TObject, TString, "$AA.TypeConverter<T,int[]>", "$AA.TypeEvaluator<T>", "T[]"),
-                    CallMatcher.staticCall(TObjectAnimator, "ofArgb").parameterTypes(TObject, TString, "int[]"),
-                    CallMatcher.staticCall(TObjectAnimator, "ofFloat").parameterTypes(TObject, TString, "float[]"),
-                    CallMatcher.staticCall(TObjectAnimator, "ofMultiFloat").parameterTypes(TObject, TString, null /* float[][] | Path */),
-                    CallMatcher.staticCall(TObjectAnimator, "ofMultiFloat").parameterTypes(TObject, TString, "$AA.TypeConverter<T,float[]>", "$AA.TypeEvaluator<T>", "T[]"),
-                    CallMatcher.staticCall(TObjectAnimator, "ofObject").parameterTypes(TObject, TString, "$AA.TypeEvaluator", "java.lang.Object[]"),
-                    CallMatcher.staticCall(TObjectAnimator, "ofObject").parameterTypes(TObject, TString, "$AA.TypeConverter<android.graphics.PointF,?>", TPath),
+                    CallMatcher.staticCall(TOBJECTANIMATOR, "ofInt").parameterTypes(TObject, TString, "int[]"),
+                    CallMatcher.staticCall(TOBJECTANIMATOR, "ofMultiInt").parameterTypes(TObject, TString, null /* int[][] | Path */),
+                    CallMatcher.staticCall(TOBJECTANIMATOR, "ofMultiInt").parameterTypes(TObject, TString, "$AA.TypeConverter<T,int[]>", "$AA.TypeEvaluator<T>", "T[]"),
+                    CallMatcher.staticCall(TOBJECTANIMATOR, "ofArgb").parameterTypes(TObject, TString, "int[]"),
+                    CallMatcher.staticCall(TOBJECTANIMATOR, "ofFloat").parameterTypes(TObject, TString, "float[]"),
+                    CallMatcher.staticCall(TOBJECTANIMATOR, "ofMultiFloat").parameterTypes(TObject, TString, null /* float[][] | Path */),
+                    CallMatcher.staticCall(TOBJECTANIMATOR, "ofMultiFloat").parameterTypes(TObject, TString, "$AA.TypeConverter<T,float[]>", "$AA.TypeEvaluator<T>", "T[]"),
+                    CallMatcher.staticCall(TOBJECTANIMATOR, "ofObject").parameterTypes(TObject, TString, "$AA.TypeEvaluator", "java.lang.Object[]"),
+                    CallMatcher.staticCall(TOBJECTANIMATOR, "ofObject").parameterTypes(TObject, TString, "$AA.TypeConverter<android.graphics.PointF,?>", TPATH),
                 ), firstArgMustBeView, intArrayOf(1), null
             ),
             MatcherToFix(
                 CallMatcher.anyOf(
-                    CallMatcher.staticCall(TObjectAnimator, "ofInt").parameterTypes(TObject, TString, TString, TPath),
-                    CallMatcher.staticCall(TObjectAnimator, "ofFloat").parameterTypes(TObject, TString, TString, TPath),
+                    CallMatcher.staticCall(TOBJECTANIMATOR, "ofInt").parameterTypes(TObject, TString, TString, TPATH),
+                    CallMatcher.staticCall(TOBJECTANIMATOR, "ofFloat").parameterTypes(TObject, TString, TString, TPATH),
                 ), firstArgMustBeView, intArrayOf(1, 2), null
             ),
             MatcherToFix(CallMatcher.anyOf(
-                CallMatcher.staticCall(TPropValsHolder, "ofInt").parameterTypes(TString, "int[]"),
-                CallMatcher.staticCall(TPropValsHolder, "ofMultiInt").parameterTypes(TString, null /* int[][] | Path */),
-                CallMatcher.staticCall(TPropValsHolder, "ofMultiInt").parameterTypes(TString, "$AA.TypeConverter<V,int[]>", "$AA.TypeEvaluator<V>", "V[]"),
-                CallMatcher.staticCall(TPropValsHolder, "ofMultiInt").parameterTypes(TString, "$AA.TypeConverter<T,int[]>", "$AA.TypeEvaluator<T>", "$AA.Keyframe[]"),
-                CallMatcher.staticCall(TPropValsHolder, "ofFloat").parameterTypes(TString, "float[]"),
-                CallMatcher.staticCall(TPropValsHolder, "ofMultiFloat").parameterTypes(TString, null /* float[][] | Path */),
-                CallMatcher.staticCall(TPropValsHolder, "ofMultiFloat").parameterTypes(TString, "$AA.TypeConverter<V,float[]>", "$AA.TypeEvaluator<V>", "V[]"),
-                CallMatcher.staticCall(TPropValsHolder, "ofMultiFloat").parameterTypes(TString, "$AA.TypeConverter<T,float[]>", "$AA.TypeEvaluator<T>", "$AA.Keyframe[]"),
-                CallMatcher.staticCall(TPropValsHolder, "ofObject").parameterTypes(TString, "$AA.TypeEvaluator", "java.lang.Object[]"),
-                CallMatcher.staticCall(TPropValsHolder, "ofObject").parameterTypes(TString, "$AA.TypeConverter<android.graphics.PointF,?>", TPath),
-                CallMatcher.staticCall(TPropValsHolder, "ofKeyframe").parameterTypes(TString, "$AA.Keyframe[]"),
+                CallMatcher.staticCall(TPROPVALSHOLDER, "ofInt").parameterTypes(TString, "int[]"),
+                CallMatcher.staticCall(TPROPVALSHOLDER, "ofMultiInt").parameterTypes(TString, null /* int[][] | Path */),
+                CallMatcher.staticCall(TPROPVALSHOLDER, "ofMultiInt").parameterTypes(TString, "$AA.TypeConverter<V,int[]>", "$AA.TypeEvaluator<V>", "V[]"),
+                CallMatcher.staticCall(TPROPVALSHOLDER, "ofMultiInt").parameterTypes(TString, "$AA.TypeConverter<T,int[]>", "$AA.TypeEvaluator<T>", "$AA.Keyframe[]"),
+                CallMatcher.staticCall(TPROPVALSHOLDER, "ofFloat").parameterTypes(TString, "float[]"),
+                CallMatcher.staticCall(TPROPVALSHOLDER, "ofMultiFloat").parameterTypes(TString, null /* float[][] | Path */),
+                CallMatcher.staticCall(TPROPVALSHOLDER, "ofMultiFloat").parameterTypes(TString, "$AA.TypeConverter<V,float[]>", "$AA.TypeEvaluator<V>", "V[]"),
+                CallMatcher.staticCall(TPROPVALSHOLDER, "ofMultiFloat").parameterTypes(TString, "$AA.TypeConverter<T,float[]>", "$AA.TypeEvaluator<T>", "$AA.Keyframe[]"),
+                CallMatcher.staticCall(TPROPVALSHOLDER, "ofObject").parameterTypes(TString, "$AA.TypeEvaluator", "java.lang.Object[]"),
+                CallMatcher.staticCall(TPROPVALSHOLDER, "ofObject").parameterTypes(TString, "$AA.TypeConverter<android.graphics.PointF,?>", TPATH),
+                CallMatcher.staticCall(TPROPVALSHOLDER, "ofKeyframe").parameterTypes(TString, "$AA.Keyframe[]"),
             ), dontMindArgs /* too complicated, just don't mind :) */, intArrayOf(0), null
             ),
             MatcherToFix(

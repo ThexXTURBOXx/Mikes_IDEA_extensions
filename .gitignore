@@ -1,7 +1,5 @@
-/.idea/
-/.gradle/
-/build/
-# Project exclude paths
-/out/
-/out/production/classes/
-local.properties
+.gradle
+.idea
+.intellijPlatform
+.qodana
+build
